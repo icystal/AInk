@@ -162,7 +162,7 @@ const handleLogin = async () => {
 
     // 登录成功后自动跳转页面
     setTimeout(() => {
-      router.replace('/')
+      router.replace('/step')
     }, 1000)
 
   } catch (error) {
