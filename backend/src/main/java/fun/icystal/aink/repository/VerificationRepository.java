@@ -56,6 +56,14 @@ public class VerificationRepository {
         return token;
     }
 
+    public boolean checkAuthToken(String email, String authToken) {
+        if (StringUtils.isAnyBlank(email, authToken)) {
+            return false;
+        }
+        String key = RedisRule.LOGIN_AUTH_TOKEN.buildKey(email);
+        return authToken.equals(redisTemplate.opsForValue().get(key));
+    }
+
     private String generateRandomCode() {
         StringBuilder code = new StringBuilder();
         for (int i = 0; i < 4; i++) {
