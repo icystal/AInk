@@ -2,16 +2,23 @@ package fun.icystal.aink.obj.entity.outline;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class Outline {
 
-    private String background;
+    private Sentence sentence;
 
-    private String act1;
+    private Brief brief;
 
-    private String act2;
+    private List<Profile> profiles;
 
-    private String act3;
+    private Skeleton skeleton;
 
-    private String act4;
+    private List<Origin> origins;
+
+    private Synopsis synopsis;
+
+    private List<Biography> biographies;
+
 }

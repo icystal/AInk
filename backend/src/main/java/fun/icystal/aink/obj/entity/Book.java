@@ -1,5 +1,6 @@
 package fun.icystal.aink.obj.entity;
 
+import fun.icystal.aink.obj.entity.outline.Outline;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -13,7 +14,7 @@ public class Book {
 
     private String email;
 
-    private BookDetail bookDetail;
+    private Outline outline;
 
     private LocalDateTime createTime;
 

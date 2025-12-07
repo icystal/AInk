@@ -8,7 +8,7 @@ import java.util.List;
 @Mapper
 public interface BookMapper {
 
-    @Insert("INSERT INTO book(id, title, email, book_detail, create_time, update_time) VALUES (#{id}, #{title}, #{email}, #{bookDetail}, #{createTime}, #{updateTime})")
+    @Insert("INSERT INTO book(id, title, email, outline, create_time, update_time) VALUES (#{id}, #{title}, #{email}, #{outline}, #{createTime}, #{updateTime})")
     int insert(Book book);
 
     @Delete("DELETE FROM book WHERE id = #{id}")

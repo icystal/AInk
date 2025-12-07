@@ -11,8 +11,10 @@ import fun.icystal.aink.obj.response.AInkResponse;
 import fun.icystal.aink.service.BookService;
 import fun.icystal.aink.service.outline.OutlineStepHandler;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -49,22 +51,32 @@ public class OutlineController {
     private OutlineContext initContext(OutlineRequest request) {
         OutlineContext context = new OutlineContext();
 
+        // 大纲阶段
         OutlineStep step = OutlineStep.hit(request.getCode());
         if (step == null) {
             throw new AInkException(ResponseCode.OUTLINE_STEP_NOT_EXIST);
         }
         context.setStep(step);
 
+        // 操作模式
         OutlineMode mode = OutlineMode.hit(request.getMode());
         if (mode == null) {
             throw new AInkException(ResponseCode.OUTLINE_MODE_NOT_EXIST);
         }
 
+        // 目标书籍
         Book book = bookService.queryById(request.getBookId());
         if (book == null) {
             throw new AInkException(ResponseCode.BOOK_NOT_EXIST);
         }
         context.setBook(book);
+
+        // 个性化参数
+        if (CollectionUtils.isEmpty(request.getExtMap())) {
+            context.setCustomRequestParam(new HashMap<>());
+        } else {
+            context.setCustomRequestParam(request.getExtMap());
+        }
 
         return context;
     }
