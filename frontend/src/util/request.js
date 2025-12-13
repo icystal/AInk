@@ -3,7 +3,7 @@ import {useUserStore} from "@/stores/user.js";
 import router from "@/router/index.js";
 
 const request = axios.create({
-  baseURL: 'http://127.0.0.1:7717/aink',
+  baseURL: 'http://localhost:7717/aink',
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json'

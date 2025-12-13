@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import UserLogin from "@/views/UserLogin.vue";
-import Step from "@/views/Step.vue";
+import Outline from "@/views/Outline.vue";
 
 const routes = [
   {
@@ -9,9 +9,9 @@ const routes = [
     component: UserLogin
   },
   {
-    path: '/step',
-    name: 'Step',
-    component: Step
+    path: '/outline',
+    name: 'Outline',
+    component: Outline
   }
 ]
 

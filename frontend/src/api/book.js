@@ -36,3 +36,21 @@ export const querySpines = async () => {
   }
 }
 
+export const queryBook = async (bookId) => {
+  try {
+    const response = await request.get(`/book/${bookId}`)
+    return unwrapResponse(response)
+  } catch (error) {
+    throw new Error(error.response?.data?.message || '查询书籍失败')
+  }
+}
+
+export const saveOutline = async (book) => {
+  try {
+    const response = await request.post('/book/save', book)
+    return unwrapResponse(response)
+  } catch (error) {
+    throw new Error(error.response?.data?.message || '保存书籍失败')
+  }
+}
+

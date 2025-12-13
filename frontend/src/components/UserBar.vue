@@ -13,11 +13,15 @@ import {MoreFilled} from "@element-plus/icons-vue";
   // 书籍列表
   const spineList = ref([]);
 
-  const currentBookId = ref(-1)
+  const currentBookId = ref('-1')
 
   const loadSpines = async () => {
     try {
       spineList.value = await querySpines()
+      if (spineList.value?.length) {
+        console.log('默认选中的书籍', spineList.value[0])
+        changeBook(spineList.value[0].id)
+      }
     } catch (error) {
       console.error('获取书架内容失败:', error);
       ElMessage.error('获取书架内容失败');
@@ -80,7 +84,7 @@ import {MoreFilled} from "@element-plus/icons-vue";
       }
 
       if (currentBookId === spine.id) {
-        changeBook(-1)
+        changeBook('-1')
       }
       ElMessage.success('删除成功');
     } catch (error) {
