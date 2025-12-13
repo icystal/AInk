@@ -19,11 +19,6 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler) {
-        // 预检直接 204
-        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
-            response.setStatus(HttpServletResponse.SC_NO_CONTENT); // 204
-            return false;
-        }
 
         boolean loginStatus = verificationRepository.checkAuthToken(ContextHolder.get().getEmail(), ContextHolder.get().getToken());
         if (!loginStatus) {

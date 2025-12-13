@@ -14,6 +14,7 @@ public enum ResponseCode {
 
     BOOK_NOT_EXIST("2-1-1", "书籍不存在"),
     NO_BOOK_PERMISSION("2-1-2", "没有书籍权限"),
+    ILLEGAL_BOOK_INFO("2-1-3", "非法书籍信息"),
 
     OUTLINE_STEP_NOT_EXIST("3-1-1", "大纲阶段不存在"),
     OUTLINE_MODE_NOT_EXIST("3-1-2", "大纲模式不存在"),

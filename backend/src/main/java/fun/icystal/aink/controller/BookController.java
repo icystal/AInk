@@ -40,4 +40,16 @@ public class BookController {
         return AInkResponse.success(spines);
     }
 
+    @GetMapping("/{bookId}")
+    public AInkResponse<Book> query(@PathVariable Long bookId) {
+        Book book = bookService.queryById(bookId);
+        return AInkResponse.success(book);
+    }
+
+    @PostMapping("/save")
+    public AInkResponse<Book> save(@RequestBody Book book) {
+        bookService.save(book);
+        return AInkResponse.success(bookService.queryById(book.getId()));
+    }
+
 }

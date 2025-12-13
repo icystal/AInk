@@ -23,6 +23,11 @@ public class ContextInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler) {
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            response.setStatus(HttpServletResponse.SC_OK);
+            return false;
+        }
+
         RequestContext ctx = new RequestContext();
 
         String email = request.getHeader(HEADER_EMAIL);
@@ -41,7 +46,7 @@ public class ContextInterceptor implements HandlerInterceptor {
         }
 
         ContextHolder.set(ctx);
-        log.info("[请求上下文拦截器] request context: {}", JsonUtil.toJSONString(ctx));
+        log.info("[请求上下文拦截器] request path: {}, context: {}", request.getRequestURI(), JsonUtil.toJSONString(ctx));
         return true;
     }
 

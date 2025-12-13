@@ -44,6 +44,17 @@ public class BookService {
         return book;
     }
 
+    public void save(Book book) {
+        if (book == null || book.getId() == null) {
+            throw new AInkException(ResponseCode.ILLEGAL_BOOK_INFO);
+        }
+
+        book.setUpdateTime(LocalDateTime.now());
+        book.setCreateTime(null);
+        book.setEmail(null);
+        bookMapper.updateById(book);
+    }
+
     public void delete(Long bookId) {
         queryById(bookId);
         bookMapper.delete(bookId);
