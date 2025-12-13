@@ -34,7 +34,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOriginPatterns("*")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                .allowedHeaders("INK-EMAIL", "INK-TOKEN")
+                .allowedHeaders("*")
                 .exposedHeaders("INK-EMAIL", "INK-TOKEN")
                 .maxAge(3600)
                 .allowCredentials(true);
