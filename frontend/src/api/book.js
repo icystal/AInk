@@ -54,3 +54,17 @@ export const saveOutline = async (book) => {
   }
 }
 
+export const generateOutline = async (bookId, stepCode, extMap) => {
+  try {
+    const response = await request.post('/outline/step', {
+      'bookId': bookId,
+      'mode': 'generate',
+      'code': stepCode,
+      'extMap': extMap
+    })
+    return unwrapResponse(response)
+  } catch (error) {
+    throw new Error(error.response?.data?.message || '生成大纲信息失败')
+  }
+}
+

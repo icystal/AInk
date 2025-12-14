@@ -7,7 +7,29 @@
             一句话简介
           </h1>
 
-          <div v-if="editingSentence" class="edit-form">
+          <div v-if="generatingSentence" class="edit-form">
+            <div class="form-group">
+              <label class="form-label">类型</label>
+              <select class="form-select" v-model="sentenceForm.genre">
+                <option value="悬疑">悬疑</option>
+                <option value="爱情">爱情</option>
+                <option value="武侠">武侠</option>
+                <option value="玄幻">玄幻</option>
+                <option value="文学">文学</option>
+                <option value="历史">历史</option>
+                <option value="情色">情色</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">主角身份</label>
+              <textarea class="form-textarea" v-model="sentenceForm.identity" rows="1"></textarea>
+            </div>
+            <div class="form-actions">
+              <el-button class="btn-secondary" @click="cancelGenerateSentence">取消</el-button>
+              <el-button class="btn-primary" @click="submitSentencePrompt">生成</el-button>
+            </div>
+          </div>
+          <div v-else-if="editingSentence" class="edit-form">
             <div class="form-group">
               <label class="form-label">类型</label>
               <select class="form-select" v-model="sentenceForm.genre">
@@ -36,7 +58,10 @@
           <div v-else-if="!hasSentence && !editingSentence" class="empty-state">
             <div class="empty-icon">📖</div>
             <el-button class="btn-primary" @click="createSentence">
-              <el-icon><Plus /></el-icon> 创建故事简介
+              <el-icon><Plus /></el-icon> 创建
+            </el-button>
+            <el-button class="btn-generate" @click="generateSentence">
+              <el-icon><Promotion /></el-icon> AI生成
             </el-button>
           </div>
           <div v-else>
@@ -58,6 +83,7 @@
             <el-button class="btn-danger" @click="deleteSentence">
               <el-icon><Delete /></el-icon> 删除
             </el-button>
+
           </div>
         </div>
       </el-main>
@@ -73,9 +99,9 @@
 
 import UserBar from "@/components/UserBar.vue";
 import {reactive, ref} from "vue";
-import {queryBook, saveOutline} from "@/api/book.js";
+import {generateOutline, queryBook, saveOutline} from "@/api/book.js";
 import {ElMessage} from "element-plus";
-import {Delete, Edit, Plus} from "@element-plus/icons-vue";
+import {Delete, Edit, Plus, Promotion} from "@element-plus/icons-vue";
 
 // 数据
 const currentBookId = ref('');
@@ -91,6 +117,7 @@ const hasBrief = ref(false);
 const profileNum = ref(0);
 
 const editingSentence = ref(false);
+const generatingSentence = ref(false);
 const editingBrief = ref(false);
 const editingProfile = ref(null);
 
@@ -125,6 +152,17 @@ const createSentence = () => {
   }
   startEditSentence()
 }
+// ai生成一句话简介
+const generateSentence = () => {
+  console.log('生成一句话简介')
+  outline.value.sentence = {
+    genre: '',
+    identity: '',
+    content: ''
+  }
+  Object.assign(sentenceForm, outline.value.sentence)
+  generatingSentence.value = true
+}
 // 编辑一句话简介
 const startEditSentence = () => {
   Object.assign(sentenceForm, outline.value.sentence)
@@ -133,6 +171,36 @@ const startEditSentence = () => {
 // 一句话简介 取消编辑
 const cancelEditSentence = () => {
   editingSentence.value = false;
+}
+// 一句话简介 取消ai生成
+const cancelGenerateSentence = () => {
+  generatingSentence.value = false;
+}
+// 提交一句话简介 prompt
+const submitSentencePrompt = async () => {
+  try {
+    const prompt = {
+      'sentence-genre': null,
+      'sentence-identity': null
+    }
+    if (sentenceForm.genre) {
+      prompt["sentence-genre"] = sentenceForm.genre
+    }
+    if (sentenceForm.identity) {
+      prompt["sentence-identity"] = sentenceForm.identity
+    }
+    const book = await generateOutline(currentBookId.value, 'sentence', prompt)
+    generatingSentence.value = false
+
+    sentenceForm.genre = book?.outline?.sentence?.genre
+    sentenceForm.identity = book?.outline?.sentence?.identity
+    sentenceForm.content = book?.outline?.sentence?.content
+    editingSentence.value = true
+    ElMessage.success('生成一句话简介成功');
+  } catch (error) {
+    console.error('生成一句话简介失败:', error);
+    ElMessage.error('生成一句话简介失败, 请稍后再试');
+  }
 }
 const saveSentence = async () => {
   try {
@@ -251,6 +319,26 @@ const loadOutline = async (bookId) => {
 }
 
 .btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-generate {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.btn-generate:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
 }
