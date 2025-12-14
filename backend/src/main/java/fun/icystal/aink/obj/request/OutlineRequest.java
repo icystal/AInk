@@ -17,8 +17,8 @@ public class OutlineRequest {
 
     /**
      * 传递各阶段的定制化参数
-     * brief-genre  brief阶段 类别
-     * brief-character  brief阶段 主角身份
+     * sentence-genre  sentence阶段 类别
+     * sentence-identity  sentence阶段 主角身份
      */
     private Map<String, String> extMap;
 

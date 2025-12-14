@@ -63,6 +63,7 @@ public class OutlineController {
         if (mode == null) {
             throw new AInkException(ResponseCode.OUTLINE_MODE_NOT_EXIST);
         }
+        context.setMode(mode);
 
         // 目标书籍
         Book book = bookService.queryById(request.getBookId());
