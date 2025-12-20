@@ -85,6 +85,75 @@
             </el-button>
 
           </div>
+
+          <h1 class="section-title">
+            一段话简介
+          </h1>
+
+          <div v-if="editingBrief" class="edit-form">
+            <div class="form-group">
+              <label class="form-label">故事背景</label>
+              <textarea class="form-textarea" v-model="briefForm.background" rows="1"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">开端</label>
+              <textarea class="form-textarea" v-model="briefForm.beginning" rows="1"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">发展</label>
+              <textarea class="form-textarea" v-model="briefForm.development" rows="1"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">高潮</label>
+              <textarea class="form-textarea" v-model="briefForm.climax" rows="1"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">结局</label>
+              <textarea class="form-textarea" v-model="briefForm.ending" rows="1"></textarea>
+            </div>
+            <div class="form-actions">
+              <el-button class="btn-secondary" @click="cancelEditBrief">取消</el-button>
+              <el-button class="btn-primary" @click="saveBrief">保存</el-button>
+            </div>
+          </div>
+          <div v-else-if="!hasBrief && !editingBrief" class="empty-state">
+            <div class="empty-icon">📖</div>
+            <el-button class="btn-primary" @click="createBrief">
+              <el-icon><Plus /></el-icon> 创建
+            </el-button>
+            <el-button class="btn-generate" @click="generateBrief">
+              <el-icon><Promotion /></el-icon> AI生成
+            </el-button>
+          </div>
+          <div v-else>
+            <div v-if="outline.brief.background" class="structure-section">
+              <h3 class="structure-title">故事背景</h3>
+              <p class="structure-content">{{outline.brief.background}}</p>
+            </div>
+            <div v-if="outline.brief.beginning" class="structure-section">
+              <h3 class="structure-title">开端</h3>
+              <p class="structure-content">{{outline.brief.beginning}}</p>
+            </div>
+            <div v-if="outline.brief.development" class="structure-section">
+              <h3 class="structure-title">发展</h3>
+              <p class="structure-content">{{outline.brief.development}}</p>
+            </div>
+            <div v-if="outline.brief.climax" class="structure-section">
+              <h3 class="structure-title">高潮</h3>
+              <p class="structure-content">{{outline.brief.climax}}</p>
+            </div>
+            <div v-if="outline.brief.ending" class="structure-section">
+              <h3 class="structure-title">结局</h3>
+              <p class="structure-content">{{outline.brief.ending}}</p>
+            </div>
+            <el-button class="btn-secondary" @click="startEditBrief">
+              <el-icon><Edit /></el-icon> 编辑
+            </el-button>
+            <el-button class="btn-danger" @click="deleteBrief">
+              <el-icon><Delete /></el-icon> 删除
+            </el-button>
+
+          </div>
         </div>
       </el-main>
 
@@ -128,10 +197,10 @@ const sentenceForm = reactive({
 });
 const briefForm = reactive({
   background: '',
-  act1: '',
-  act2: '',
-  act3: '',
-  act4: ''
+  beginning: '',
+  development: '',
+  climax: '',
+  ending: ''
 });
 const profileForm = reactive({
   name: '',
@@ -231,6 +300,85 @@ const deleteSentence = async () => {
   } catch (error) {
     console.error('删除一句话简介失败:', error);
     ElMessage.error('删除一句话简介失败, 请稍后再试');
+  }
+}
+
+// 创建一段话简介
+const createBrief = () => {
+  console.log('创建一段话简介')
+  outline.value.brief = {
+    background: '',
+    beginning: '',
+    acy2: '',
+    climax: '',
+    acy4: ''
+  }
+  startEditBrief()
+}
+// ai生成一句话简介
+const generateBrief = () => {
+  console.log('生成一段话简介')
+  outline.value.brief = {
+    background: '',
+    beginning: '',
+    acy2: '',
+    climax: '',
+    acy4: ''
+  }
+  Object.assign(briefForm, outline.value.brief)
+  submitBriefPrompt()
+
+}
+// 编辑一段话简介
+const startEditBrief = () => {
+  Object.assign(briefForm, outline.value.brief)
+  editingBrief.value = true;
+};
+// 一句段简介 取消编辑
+const cancelEditBrief = () => {
+  editingBrief.value = false;
+}
+// 提交一段话简介 prompt
+const submitBriefPrompt = async () => {
+  try {
+    const book = await generateOutline(currentBookId.value, 'brief', null)
+    Object.assign(briefForm, book.outline.brief)
+    editingBrief.value = true
+    ElMessage.success('生成一段话简介成功');
+  } catch (error) {
+    console.error('生成一段话简介失败:', error);
+    ElMessage.error('生成一段话简介失败, 请稍后再试');
+  }
+}
+const saveBrief = async () => {
+  try {
+    outline.value.brief = { ...briefForm };
+    const book = await saveOutline({
+      'id': currentBookId.value,
+      'outline': outline.value
+    })
+    flush(book)
+    editingBrief.value = false;
+    ElMessage.success('保存一段话简介成功');
+  } catch (error) {
+    console.error('保存一段话简介失败:', error);
+    ElMessage.error('保存一段话简介失败, 请稍后再试');
+  }
+}
+const deleteBrief = async () => {
+  try {
+    outline.value.brief = null;
+    const book = await saveOutline({
+      'id': currentBookId.value,
+      'outline': outline.value
+    })
+    flush(book)
+    editingBrief.value = false;
+    hasBrief.value = false;
+    ElMessage.success('删除一段话简介成功');
+  } catch (error) {
+    console.error('删除一段话简介失败:', error);
+    ElMessage.error('删除一段话简介失败, 请稍后再试');
   }
 }
 
