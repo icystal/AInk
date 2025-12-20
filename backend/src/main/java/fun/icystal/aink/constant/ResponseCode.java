@@ -18,6 +18,7 @@ public enum ResponseCode {
 
     OUTLINE_STEP_NOT_EXIST("3-1-1", "大纲阶段不存在"),
     OUTLINE_MODE_NOT_EXIST("3-1-2", "大纲模式不存在"),
+    ILLEGAL_OUTLINE_STEP("3-1-3", "非法大纲阶段"),
 
     NOT_IMPLEMENTED("-2", "尚未实现的功能"),
     UNKNOWN("-1", "未知异常");
