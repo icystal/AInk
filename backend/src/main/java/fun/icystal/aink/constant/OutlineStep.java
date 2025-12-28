@@ -11,17 +11,17 @@ public enum OutlineStep {
 
     BRIEF("brief", "一段式概括"),
 
-    PROFILE("profile", "一页纸人物介绍"),
+    PROFILE("profiles", "一页纸人物介绍"),
 
     SKELETON("skeleton", "一页纸大纲"),
 
-    ORIGIN("origin", "人物大纲"),
+    ORIGIN("origins", "人物大纲"),
 
     SYNOPSIS("synopsis", "四页纸大纲"),
 
-    BIOGRAPHY("biography", "人物宝典"),
+    BIOGRAPHY("biographies", "人物宝典"),
 
-    SCENE("scene", "场景清单"),
+    SCENE("scenes", "场景清单"),
 
     PLOT("plot", "规划场景")
     ;

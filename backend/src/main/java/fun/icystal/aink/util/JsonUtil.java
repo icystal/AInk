@@ -13,6 +13,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -89,5 +90,32 @@ public final class JsonUtil {
             log.error("json util 反序列化列表异常", e);
             return null;
         }
+    }
+
+    public static <T> T parseObjectFromAIResponse(String text, Type type) {
+        try {
+            return MAPPER.readValue(resolveJsonText(text), MAPPER.constructType(type));
+        } catch (JsonProcessingException e) {
+            log.error( "Could not parse the given text to the desired target type: {} into {}", text, type.getTypeName());
+            return null;
+        }
+    }
+
+    private static String resolveJsonText(String text) {
+        text = text.trim();
+        if (text.startsWith("```") && text.endsWith("```")) {
+            String[] lines = text.split("\n", 2);
+            if (lines[0].trim().equalsIgnoreCase("```json")) {
+                text = lines.length > 1 ? lines[1] : "";
+            } else {
+                text = text.substring(3);
+            }
+
+            text = text.substring(0, text.length() - 3);
+            text = text.trim();
+        }
+        int startIndex = text.indexOf('{');
+        int endIndex = text.lastIndexOf('}');
+        return text.substring(startIndex, endIndex + 1);
     }
 }
